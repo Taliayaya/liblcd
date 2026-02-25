@@ -77,11 +77,13 @@ parameter:
 ******************************************************************************/
 static void LCD_1IN69_InitReg(void)
 {
-	DEV_SPI_WriteByte(0xaa);
-	DEV_SPI_WriteByte(0xaa);
-	DEV_SPI_WriteByte(0xaa);
-	LCD_1IN69_SendCommand(0x36);
-	LCD_1IN69_SendData_8Bit(0x00);
+	// DEV_SPI_WriteByte(0xaa);
+	// DEV_SPI_WriteByte(0xaa);
+	// DEV_SPI_WriteByte(0xaa);
+
+	// this is already set in LCD_1IN69_SetAttributes()
+	// LCD_1IN69_SendCommand(0x36);
+	// LCD_1IN69_SendData_8Bit(0x70);
 
 	LCD_1IN69_SendCommand(0x3A);
 	LCD_1IN69_SendData_8Bit(0x05);
@@ -285,11 +287,11 @@ void LCD_1IN69_Display(UWORD *Image)
 {
 	UWORD j;
 
-	LCD_1IN69_SetWindows(0, 0, LCD_1IN69.WIDTH, LCD_1IN69.HEIGHT);
+	LCD_1IN69_SetWindows(0, 0, LCD_1IN69_WIDTH, LCD_1IN69_HEIGHT);
 	LCD_1IN69_DC_1;
-	for (j = 0; j < LCD_1IN69.HEIGHT; j++)
+	for (j = 0; j < LCD_1IN69_HEIGHT; j++)
 	{
-		DEV_SPI_Write_nByte((uint8_t *)&Image[j * LCD_1IN69.WIDTH], LCD_1IN69.WIDTH * 2);
+		DEV_SPI_Write_nByte((uint8_t *)&Image[j * LCD_1IN69_WIDTH], LCD_1IN69_WIDTH * 2);
 	}
 }
 

@@ -56,19 +56,25 @@ void LcdRgb565::loadFromFile(const std::string &path)
 
 void LcdRgb565::loadFromMat(const cv::Mat &frame, int cvtColorFlags)
 {
+	if (frame.empty())
+	{
+		std::clog << "Error: Input Mat is empty\n";
+		return;
+	}
+
 	if (cvtColorFlags != 0)
 	{
 		cv::Mat cvTmp;
 		cv::cvtColor(frame, cvTmp, cvtColorFlags);
-		cv::resize(cvTmp, matBuffer_, cv::Size(height_, width_));
+		cv::resize(cvTmp, matBuffer_, cv::Size(width_, height_));
 	}
 	else
-		cv::resize(frame, matBuffer_, cv::Size(height_, width_));
+		cv::resize(frame, matBuffer_, cv::Size(width_, height_));
 
 	for (size_t y = 0; y < height_; ++y)
 		for (size_t x = 0; x < width_; ++x)
 		{
-			cv::Vec3b bgr = matBuffer_.at<cv::Vec3b>(x, y);
+			cv::Vec3b bgr = matBuffer_.at<cv::Vec3b>(y, x);
 			pixel(x, y, bgr);
 		}
 }

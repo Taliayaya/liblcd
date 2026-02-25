@@ -10,15 +10,16 @@ namespace lcd
 
 enum LcdType
 {
-	LCD_1INCH69_240x280
+	LCD_1INCH69_240x280,
+    LCD_DSI,
 };
 
 class LcdScreen
 {
 protected:
-	const size_t width_;
-	const size_t height_;
-	const uint16_t backlight_ = 1023;
+	size_t width_;
+	size_t height_;
+	uint16_t backlight_ = 1023;
 
 public:
 	/* Properties*/

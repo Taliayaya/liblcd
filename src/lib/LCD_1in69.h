@@ -59,6 +59,7 @@ function:   Macro definition variable name
 	void LCD_1IN69_Clear(UWORD Color);
 	void LCD_1IN69_Display(UWORD *Image);
 	void LCD_1IN69_DisplayWindows(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend, UWORD *Image);
+	void LCD_1IN69_SetWindows(UWORD Xstart, UWORD Ystart, UWORD Xend, UWORD Yend);
 	void LCD_1IN69_DrawPoint(UWORD X, UWORD Y, UWORD Color);
 	void Handler_1IN69_LCD(int signo);
 
