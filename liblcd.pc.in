@@ -1,0 +1,11 @@
+prefix=@CMAKE_INSTALL_PREFIX@
+exec_prefix=${prefix}
+libdir=@CMAKE_INSTALL_FULL_LIBDIR@
+includedir=@CMAKE_INSTALL_FULL_INCLUDEDIR@
+
+Name: lcd
+Description: LCD driver library
+Version: 1.0.0
+Requires: opencv4
+Libs: -L${libdir} -llcd -llgpio
+Cflags: -I${includedir}
