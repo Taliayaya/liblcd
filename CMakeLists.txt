@@ -17,33 +17,34 @@ set(DEBUG "-D${USELIB}")
 add_library(liblcd SHARED)
 
 find_library(LGPIO lgpio REQUIRED)
+find_package(ament_cmake REQUIRED)
 
-# Determine the library to link based on USELIB
-if(USELIB STREQUAL "USE_BCM2835_LIB")
-    set(LIBRARIES -lbcm2835 -lm)
-elseif(USELIB STREQUAL "USE_WIRINGPI_LIB")
-    set(LIBRARIES -lwiringPi -lm)
-elseif(USELIB STREQUAL "USE_DEV_LIB")
-    set(LIBRARIES ${LGPIO_LIBS} -lm)
-endif()
+# # Determine the library to link based on USELIB
+# if(USELIB STREQUAL "USE_BCM2835_LIB")
+#     set(LIBRARIES -lbcm2835 -lm)
+# elseif(USELIB STREQUAL "USE_WIRINGPI_LIB")
+#     set(LIBRARIES -lwiringPi -lm)
+# elseif(USELIB STREQUAL "USE_DEV_LIB")
+#     set(LIBRARIES ${LGPIO_LIBS} -lm)
+# endif()
 
-target_compile_definitions(liblcd PUBLIC -D${USELIB})
-
-add_compile_options(-Wall -Wextra -Werror -pedantic ${DEBUG} ${LIBRARIES})
-target_link_options(liblcd PRIVATE ${LIBRARIES} ${LGPIO_LIBS})
+add_compile_options(-Wall -Wextra -Werror -pedantic)
 
 # OPENCV ==
 target_include_directories(liblcd PRIVATE ${OpenCV_INCLUDE_DIRS} 
                                           ${LGPIO_INCLUDE_DIR})
-target_link_libraries( liblcd ${OpenCV_LIBS} )
+target_link_libraries( liblcd PUBLIC ${OpenCV_LIBS} PRIVATE ${LGPIO_LIBS} m)
 
 #target_link_libraries(liblcd PRIVATE lgpio)
 # print the link options
-message(STATUS "Link options: ${LIBRARIES}")
+# message(STATUS "Link options: ${LIBRARIES}")
 
 target_include_directories(liblcd PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_include_directories(liblcd PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/lib)
-target_include_directories(liblcd PUBLIC ${CMAKE_CURRENT_SOURCE_DIR}/include)
+target_include_directories(liblcd PUBLIC
+    $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
+    $<INSTALL_INTERFACE:include>
+)
 
 set_target_properties(liblcd PROPERTIES OUTPUT_NAME "lcd")
 
@@ -54,14 +55,20 @@ configure_file(
     ${CMAKE_CURRENT_BINARY_DIR}/liblcd.pc @ONLY
 )
 
+ament_export_targets(liblcd HAS_LIBRARY_TARGET)
+
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/liblcd.pc
     DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
 )
 
 install(TARGETS liblcd
+    EXPORT liblcd
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
 )
 
 install(DIRECTORY include/
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
 )
+
+ament_export_dependencies(OpenCV)
+ament_package()
