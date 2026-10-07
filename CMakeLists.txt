@@ -8,36 +8,20 @@ set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR})
 
-set(USE_DEV_LIB 1)
-set(USELIB "USE_DEV_LIB")  # Example setting, you can change this dynamically
-
-# Set the DEBUG flags
-set(DEBUG "-D${USELIB}")
-
 add_library(liblcd SHARED)
 
 find_library(LGPIO lgpio REQUIRED)
 find_package(ament_cmake REQUIRED)
 
-# # Determine the library to link based on USELIB
-# if(USELIB STREQUAL "USE_BCM2835_LIB")
-#     set(LIBRARIES -lbcm2835 -lm)
-# elseif(USELIB STREQUAL "USE_WIRINGPI_LIB")
-#     set(LIBRARIES -lwiringPi -lm)
-# elseif(USELIB STREQUAL "USE_DEV_LIB")
-#     set(LIBRARIES ${LGPIO_LIBS} -lm)
-# endif()
+# GPIO/SPI backend used by src/lib/config/DEV_Config.c (lgpio)
+target_compile_definitions(liblcd PRIVATE USE_DEV_LIB)
 
 add_compile_options(-Wall -Wextra -Werror -pedantic)
 
 # OPENCV ==
 target_include_directories(liblcd PRIVATE ${OpenCV_INCLUDE_DIRS} 
                                           ${LGPIO_INCLUDE_DIR})
-target_link_libraries( liblcd PUBLIC ${OpenCV_LIBS} PRIVATE ${LGPIO_LIBS} m)
-
-#target_link_libraries(liblcd PRIVATE lgpio)
-# print the link options
-# message(STATUS "Link options: ${LIBRARIES}")
+target_link_libraries( liblcd PUBLIC ${OpenCV_LIBS} PRIVATE ${LGPIO} m)
 
 target_include_directories(liblcd PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src)
 target_include_directories(liblcd PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/src/lib)
