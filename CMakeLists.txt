@@ -31,9 +31,8 @@ find_package(ament_cmake REQUIRED)
 add_compile_options(-Wall -Wextra -Werror -pedantic)
 
 # OPENCV ==
-target_include_directories(liblcd PRIVATE ${OpenCV_INCLUDE_DIRS} 
-                                          ${LGPIO_INCLUDE_DIR})
-target_link_libraries( liblcd PUBLIC ${OpenCV_LIBS} PRIVATE ${LGPIO_LIBS} m)
+target_include_directories(liblcd PRIVATE ${OpenCV_INCLUDE_DIRS})
+target_link_libraries( liblcd PUBLIC ${OpenCV_LIBS} PRIVATE ${LGPIO} m)
 
 #target_link_libraries(liblcd PRIVATE lgpio)
 # print the link options
